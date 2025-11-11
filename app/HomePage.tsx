@@ -95,6 +95,7 @@ export default function Home() {
         if (prev >= 100) {
           clearInterval(progresInterval);
           setTimeout(() => setLoading(false), 500);
+
           return 100;
         }
         return prev + 2;
