@@ -1,5 +1,4 @@
 import { useFonts } from "expo-font";
-import { router } from "expo-router";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -9,7 +8,6 @@ import {
   StyleSheet,
   Text,
   TextStyle,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -45,8 +43,8 @@ export default function Home() {
           useNativeDriver: true,
         }),
         Animated.timing(logoRotate, {
-          toValue: 0,
-          duration: 200,
+          toValue: 1,
+          duration: 300,
           easing: Easing.elastic(1),
           useNativeDriver: true,
         }),
@@ -86,7 +84,7 @@ export default function Home() {
         }),
         Animated.timing(buttonOpacity, {
           toValue: 1,
-          duration: 900,
+          duration: 700,
           useNativeDriver: true,
         }),
       ]),
@@ -172,7 +170,7 @@ export default function Home() {
               transform: [{ scale: buttonScale }],
             }}
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 backgroundColor: "#20770eff",
                 width: 300,
@@ -189,7 +187,7 @@ export default function Home() {
               <CustomText style={{ textAlign: "center", fontSize: 20 }}>
                 Bienvenue
               </CustomText>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </Animated.View>
 
           <View
