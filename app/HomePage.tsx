@@ -9,8 +9,7 @@ import {
   StyleSheet,
   Text,
   TextStyle,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -95,10 +94,13 @@ export default function Home() {
     const progresInterval = setInterval(() => {
       setProgres((prev) => {
         if (prev >= 100) {
-          clearInterval(progresInterval);
-          setTimeout(() => setLoading(false), 500);
-          return 100;
-        }
+  clearInterval(progresInterval);
+  setTimeout(() => {
+    router.push('/Test' as any);
+  }, 500);
+  return 100;
+}
+
         return prev + 2;
       });
     }, 30);
@@ -156,8 +158,8 @@ export default function Home() {
 
           <Animated.View
             style={{
-              opacity: taxiImageOpacity,
-              transform: [{ scale: taxiImageScale }],
+              opacity: taxiImageOpacity, // opacity === Hover
+              transform: [{ scale: taxiImageScale }], // scale === transition
             }}
           >
             <Image
@@ -172,7 +174,7 @@ export default function Home() {
               transform: [{ scale: buttonScale }],
             }}
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 backgroundColor: "#20770eff",
                 width: 300,
@@ -183,13 +185,13 @@ export default function Home() {
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
               }}
-              onPress={() => router.push}
+              onPress={() => router.push("")}
               activeOpacity={0.8}
             >
               <CustomText style={{ textAlign: "center", fontSize: 20 }}>
                 Bienvenue
               </CustomText>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </Animated.View>
 
           <View
@@ -215,13 +217,13 @@ export default function Home() {
       </SafeAreaView>
     );
   }
-  return (
-    <SafeAreaView style={{ backgroundColor: "#b91e1eff", flex: 1 }}>
-      <View style={styles.container}>
-        <CustomText style={{ fontSize: 30 }}>Main App Content</CustomText>
-      </View>
-    </SafeAreaView>
-  );
+  // return (
+  //   <SafeAreaView style={{ backgroundColor: "#b91e1eff", flex: 1 }}>
+  //     <View style={styles.container}>
+  //       <CustomText style={{ fontSize: 30 }}>Main App Content</CustomText>
+  //     </View>
+  //   </SafeAreaView>
+  // );
 }
 
 const styles = StyleSheet.create({
