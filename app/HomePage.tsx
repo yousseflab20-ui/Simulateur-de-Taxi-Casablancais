@@ -221,13 +221,13 @@ export default function Home() {
       </SafeAreaView>
     );
   }
-  return (
-    <SafeAreaView style={{ backgroundColor: "#b91e1eff", flex: 1 }}>
-      <View style={styles.container}>
-        <CustomText style={{ fontSize: 30 }}>Main App Content</CustomText>
-      </View>
-    </SafeAreaView>
-  );
+  // return (
+  //   <SafeAreaView style={{ backgroundColor: "#b91e1eff", flex: 1 }}>
+  //     <View style={styles.container}>
+  //       <CustomText style={{ fontSize: 30 }}>Main App Content</CustomText>
+  //     </View>
+  //   </SafeAreaView>
+  // );
 }
 
 const styles = StyleSheet.create({
