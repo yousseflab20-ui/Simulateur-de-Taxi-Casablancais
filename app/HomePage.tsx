@@ -1,4 +1,5 @@
 import { useFonts } from "expo-font";
+import { router } from "expo-router";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -13,7 +14,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface PropsCoustm {
-  children: ReactNode;
+  children?: ReactNode;
   style?: StyleProp<TextStyle>;
 }
 
@@ -94,11 +95,17 @@ export default function Home() {
       setProgres((prev) => {
         if (prev >= 100) {
           clearInterval(progresInterval);
-          setTimeout(() => setLoading(false), 500);
+          setTimeout(() => {
+            router.push({
+              pathname: "/mapApplication",
+              params: { name: "Youssef" },
+            });
+            setLoading(false);
+          }, 500);
 
           return 100;
         }
-        return prev + 2;
+        return prev + 1;
       });
     }, 30);
 
