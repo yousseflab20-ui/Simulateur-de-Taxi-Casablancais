@@ -1,8 +1,6 @@
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { useFonts } from "expo-font";
 import * as Location from "expo-location";
-import React, { ReactNode, useEffect, useState } from "react";
-import { ActivityIndicator, Alert, StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { AVAILABLE_TAXIS, CASA_CENTER } from "../data/taxiData";
 
@@ -12,13 +10,7 @@ type MyLocation = {
     longitude: number;
   };
 };
-
-interface PropsCoustm2 {
-  children?: ReactNode;
-  style?: StyleProp<TextStyle>;
-}
-
-export default function MapApplication() {
+export default function mapApplication() {
   const [userLocation, setUserLocation] = useState<MyLocation | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,80 +42,19 @@ export default function MapApplication() {
       }
     })();
   }, []);
-
-  if (!fontsLoaded || loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#20770e" />
-      </View>
-    );
-  }
-
-  const CoustmText3 = ({ children, style }: PropsCoustm2) => {
-    return (
-      <Text
-        style={[
-          {
-            fontFamily: "Font3",
-            fontSize: 18,
-            color: "#fff",
-            textAlign: "center",
-          },
-          style,
-        ]}
-      >
-        {children}
-      </Text>
-    );
-  };
-
   return (
-    <View style={{ flex: 1 }}>
-      <MapView
-        style={styles.map}
-        initialRegion={
-          userLocation
-            ? {
-              latitude: userLocation.coords.latitude,
-              longitude: userLocation.coords.longitude,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05,
-            }
-            : CASA_CENTER
-        }
-        showsUserLocation={true}
-      >
-        {userLocation && (
-          <Marker
-            coordinate={{
-              latitude: userLocation.coords.latitude,
-              longitude: userLocation.coords.longitude,
-            }}
-            title="Vous êtes ici"
-            pinColor="blue"
-          />
-        )}
+    <MapView initialRegion={CASA_CENTER} style={{ flex: 1 }}>
+      <Marker coordinate={USER_POSITION} title="You are here" />
 
-        {AVAILABLE_TAXIS.map((taxi) => (
-          <Marker
-            key={taxi.id}
-            coordinate={{ latitude: taxi.latitude, longitude: taxi.longitude }}
-            title={`Taxi ${taxi.id}`}
-          >
-            <FontAwesome6 name="taxi" size={24} color="red" />
-          </Marker>
-        ))}
-      </MapView>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <CoustmText3 style={{ fontSize: 20, fontWeight: "bold" }}>
-            🚖 Réserver un Taxi
-          </CoustmText3>
-          <CoustmText3 style={{ fontSize: 14, marginTop: 5 }}>Hello</CoustmText3>
-        </TouchableOpacity>
-      </View>
-    </View>
+      {AVAILABLE_TAXIS.map((taxi) => (
+        <Marker
+          key={taxi.id}
+          coordinate={{ latitude: taxi.latitude, longitude: taxi.longitude }}
+          title={`Taxi ${taxi.id}`}
+          pinColor="red"
+        />
+      ))}
+    </MapView>
   );
 }
 
