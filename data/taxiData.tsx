@@ -1,5 +1,3 @@
-// data/taxiData.js
-
 export const CASA_CENTER = {
   latitude: 33.5731,
   longitude: -7.5898,
