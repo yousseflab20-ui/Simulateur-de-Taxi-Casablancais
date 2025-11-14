@@ -85,7 +85,7 @@ export default function mapApplication() {
             bottom: 80,
             position: "absolute",
             padding: 15,
-            borderRadius: 10,
+            borderRadius: 17,
           }}
         >
           <CustomText2>🚖 Réserver un taxi</CustomText2>
