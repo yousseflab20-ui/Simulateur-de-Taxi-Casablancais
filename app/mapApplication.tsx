@@ -1,3 +1,4 @@
+import { useTaxiStore } from "@/store/useTaxiStore";
 import { calculatePrice, calculateTime, calculation2 } from "@/utils/calculations";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useFonts } from "expo-font";
@@ -31,6 +32,8 @@ interface Coord {
 interface CasaLocations {
   [key: string]: Coord;
 }
+
+
 export const casaLocations: CasaLocations = {
   "Morocco Mall": { latitude: 33.5899, longitude: -7.6039 },
   "Mosquée Hassan II": { latitude: 33.5890, longitude: -7.6180 },
@@ -39,6 +42,8 @@ export const casaLocations: CasaLocations = {
 
 export default function mapApplication() {
   const [userLocation, setUserLocation] = useState<{ coords: Coord } | null>(null);
+  const { isNightMode, toggleNightMode } = useTaxiStore();
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -106,8 +111,24 @@ export default function mapApplication() {
 
           <CustomText2>🚖 Réserver un taxi</CustomText2>
         </TouchableOpacity>
-      </View>
 
+
+      </View>
+      <TouchableOpacity
+        style={{
+          backgroundColor: "#DC143C",
+          bottom: 800,
+          left: 280,
+          position: "absolute",
+          padding: 15,
+          borderRadius: 17,
+        }}
+        onPress={toggleNightMode}
+      >
+        <Text style={{ fontFamily: "Font3" }}>
+          {isNightMode ? "🌙 Mode Nuit" : "☀️ Mode Jour"}
+        </Text>
+      </TouchableOpacity>
     </View>
 
 

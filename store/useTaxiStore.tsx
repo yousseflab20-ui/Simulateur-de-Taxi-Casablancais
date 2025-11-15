@@ -1,21 +1,30 @@
 import { create } from 'zustand';
-export const useTaxiStore = create((set) => ({
-    lightMode: false,
+interface TaxiStore {
+    isNightMode: boolean;
+    activeRide: any | null;
+    rideHistory: any[];
+
+    toggleNightMode: () => void;
+    startRide: (rideData: any) => void;
+    endRide: () => void;
+    cancelRide: () => void;
+}
+
+export const useTaxiStore = create<TaxiStore>((set) => ({
+    isNightMode: false,
     activeRide: null,
     rideHistory: [],
 
-    tooggleNightMode: () => set((state: { lightMode: any }) => ({ lightMode: !state.lightMode })),
-
-    starRide: (riderData: any) => set(() => ({ activeRide: riderData })),
-
+    toggleNightMode: () => set((state) => ({ isNightMode: !state.isNightMode })),
+    startRide: (rideData) => set(() => ({ activeRide: rideData })),
     endRide: () =>
-        set((state: { activeRide: any; riderHistory: any }) => {
-            if (!state.activeRide) return {}
-            const riderwithData = { ...state.activeRide, endAt: new Date() }
+        set((state) => {
+            if (!state.activeRide) return {};
+            const rideWithDate = { ...state.activeRide, endAt: new Date() };
             return {
                 activeRide: null,
-                riderHistory: [...state.riderHistory, riderwithData],
-            }
+                rideHistory: [...state.rideHistory, rideWithDate],
+            };
         }),
     cancelRide: () => set(() => ({ activeRide: null })),
-}))
+}));
