@@ -8,7 +8,7 @@ export default function RootLayout() {
         name="mapApplication"
         options={{ title: "mapApplication" }}
       />
-      <Stack.Screen name="Test" options={{ title: "Test" }} />
+      <Stack.Screen name="Booking" options={{ title: "Booking" }} />
     </Stack>
   );
 }

@@ -7,6 +7,7 @@ import {
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useFonts } from "expo-font";
 import * as Location from "expo-location";
+import { router } from "expo-router";
 import React, { ReactNode, useEffect, useState } from "react";
 import {
   Alert,
@@ -55,7 +56,9 @@ export default function mapApplication() {
         Alert.alert("Permission refusée");
         return;
       }
-      let currentLocation = await Location.getCurrentPositionAsync({});
+      let currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Highest,
+      });
       setUserLocation(currentLocation);
     })();
   }, []);
@@ -115,6 +118,7 @@ export default function mapApplication() {
             padding: 15,
             borderRadius: 17,
           }}
+          onPress={() => router.push("../Booking")}
         >
           <CustomText2>🚖 Réserver un taxi</CustomText2>
         </TouchableOpacity>

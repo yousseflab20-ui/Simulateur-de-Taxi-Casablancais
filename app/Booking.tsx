@@ -1,16 +1,22 @@
 import { router } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Booking2() {
+export default function Booking() {
   return (
-    <ScrollView style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>🔙 Retour</Text>
-      </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Text style={styles.backText}>🔙 Retour</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.title}>🚖 Réserver un Taxi</Text>
-    </ScrollView>
+        <Text style={styles.title}>🚖 Réserver un Taxi</Text>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -34,6 +40,5 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
   },
 });
