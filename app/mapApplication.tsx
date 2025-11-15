@@ -1,9 +1,12 @@
 import { useTaxiStore } from "@/store/useTaxiStore";
-import { calculatePrice, calculateTime, calculation2 } from "@/utils/calculations";
+import {
+  calculatePrice,
+  calculateTime,
+  calculation2,
+} from "@/utils/calculations";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useFonts } from "expo-font";
 import * as Location from "expo-location";
-import { router } from "expo-router";
 import React, { ReactNode, useEffect, useState } from "react";
 import {
   Alert,
@@ -11,7 +14,7 @@ import {
   Text,
   TextStyle,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { AVAILABLE_TAXIS, CASA_CENTER, USER_POSITION } from "../data/taxiData";
@@ -34,15 +37,15 @@ interface CasaLocations {
   [key: string]: Coord;
 }
 
-
 export const casaLocations: CasaLocations = {
   "Morocco Mall": { latitude: 33.5899, longitude: -7.6039 },
-  "Mosquée Hassan II": { latitude: 33.5890, longitude: -7.6180 },
+  "Mosquée Hassan II": { latitude: 33.589, longitude: -7.618 },
 };
 
-
 export default function mapApplication() {
-  const [userLocation, setUserLocation] = useState<{ coords: Coord } | null>(null);
+  const [userLocation, setUserLocation] = useState<{ coords: Coord } | null>(
+    null
+  );
   const { isNightMode, toggleNightMode } = useTaxiStore();
 
   useEffect(() => {
@@ -93,9 +96,14 @@ export default function mapApplication() {
           </Marker>
         ))}
         {Object.entries(casaLocations).map(([name, coord]) => (
-          <Marker key={name}
-            coordinate={{ latitude: coord.latitude, longitude: coord.longitude }}
-            title={name} />
+          <Marker
+            key={name}
+            coordinate={{
+              latitude: coord.latitude,
+              longitude: coord.longitude,
+            }}
+            title={name}
+          />
         ))}
       </MapView>
       <View style={{ left: 0, right: 0, alignItems: "center" }}>
@@ -107,13 +115,9 @@ export default function mapApplication() {
             padding: 15,
             borderRadius: 17,
           }}
-          onPress={() => router.push("/booking")}
         >
-
           <CustomText2>🚖 Réserver un taxi</CustomText2>
         </TouchableOpacity>
-
-
       </View>
       <TouchableOpacity
         style={{
@@ -131,8 +135,6 @@ export default function mapApplication() {
         </Text>
       </TouchableOpacity>
     </View>
-
-
   );
 }
 const TestCalculation = () => {
