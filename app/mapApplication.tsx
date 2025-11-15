@@ -1,5 +1,4 @@
-import { casaLocations } from "@/data/casaLocations";
-import { calculateTime, calculation2 } from "@/utils/calculations";
+import { calculatePrice, calculateTime, calculation2 } from "@/utils/calculations";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { useFonts } from "expo-font";
 import * as Location from "expo-location";
@@ -7,11 +6,10 @@ import React, { ReactNode, useEffect, useState } from "react";
 import {
   Alert,
   StyleProp,
-  StyleSheet,
   Text,
   TextStyle,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { AVAILABLE_TAXIS, CASA_CENTER, USER_POSITION } from "../data/taxiData";
@@ -25,8 +23,22 @@ interface customText3 {
   children?: ReactNode;
   style?: StyleProp<TextStyle>;
 }
+interface Coord {
+  latitude: number;
+  longitude: number;
+}
+
+interface CasaLocations {
+  [key: string]: Coord;
+}
+export const casaLocations: CasaLocations = {
+  "Morocco Mall": { latitude: 33.5899, longitude: -7.6039 },
+  "Mosquée Hassan II": { latitude: 33.5890, longitude: -7.6180 },
+};
+
+
 export default function mapApplication() {
-  const [userLocation, setUserLocation] = useState<MyLocation | null>(null);
+  const [userLocation, setUserLocation] = useState<{ coords: Coord } | null>(null);
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -74,8 +86,10 @@ export default function mapApplication() {
             <FontAwesome6 name="taxi" size={24} color="red" />
           </Marker>
         ))}
-        {casaLocations.map((check) => (
-          <Marker key={check.id} coordinate={check.point} title={check.name} />
+        {Object.entries(casaLocations).map(([name, coord]) => (
+          <Marker key={name}
+            coordinate={{ latitude: coord.latitude, longitude: coord.longitude }}
+            title={name} />
         ))}
       </MapView>
       <View style={{ left: 0, right: 0, alignItems: "center" }}>
@@ -87,14 +101,29 @@ export default function mapApplication() {
             padding: 15,
             borderRadius: 17,
           }}
+          onPress={TestCalculation}
         >
+
           <CustomText2>🚖 Réserver un taxi</CustomText2>
         </TouchableOpacity>
       </View>
+
     </View>
+
+
   );
 }
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  map: { flex: 1 },
-});
+const TestCalculation = () => {
+  const from: Coord = casaLocations["Morocco Mall"];
+  const to: Coord = casaLocations["Mosquée Hassan II"];
+
+  const distance = calculation2(from, to);
+  const duration = calculateTime(distance);
+  const priceDay = calculatePrice(distance, false);
+  const priceNight = calculatePrice(distance, true);
+
+  console.log("Distance (km):", distance);
+  console.log("Durée (min):", duration);
+  console.log("Prix Jour (DH):", priceDay);
+  console.log("Prix Nuit (DH):", priceNight);
+};
