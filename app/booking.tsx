@@ -6,7 +6,6 @@ export default function BookingScreen() {
     return (
         <ScrollView style={styles.container}>
 
-            {/* Bouton retour */}
             <TouchableOpacity
                 style={styles.backButton}
                 onPress={() => router.back()}
@@ -14,10 +13,8 @@ export default function BookingScreen() {
                 <Text style={styles.backText}>🔙 Retour</Text>
             </TouchableOpacity>
 
-            {/* Title */}
             <Text style={styles.title}>🚖 Réserver un Taxi</Text>
 
-            {/* Ici tu peux ajouter formulaire / inputs plus tard */}
         </ScrollView>
     );
 }
