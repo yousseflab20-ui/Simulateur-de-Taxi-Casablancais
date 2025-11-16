@@ -29,13 +29,14 @@ const timeInHours  = distanceKm / vitessMouyenne
 const timeInMinutes  = timeInHours * 60
 return Math.round (timeInMinutes)
 }
-export function calculatePrice(distanceKm:number,lightMode:Boolean):number{
+export function calculatePrice(distanceKm: number, lightMode: Boolean): number {
   const PRISE_EN_CHARGE = 7.50
   const PRIX_PAR_KM_JOUR = 1.50
   const PRIX_PAR_KM_NUIT = 2.00
+
   const pricePerKm = lightMode ? PRIX_PAR_KM_JOUR : PRIX_PAR_KM_NUIT;
   const total = PRISE_EN_CHARGE + distanceKm * pricePerKm
+
   console.log(total)
   return Number(total.toFixed(2))
-  
 }

@@ -1,5 +1,5 @@
 
-export const casaLocations = [
+export const CasaLocations = [
   {
     id: "1",
     name: "Aéroport Mohammed V",

@@ -41,6 +41,14 @@ interface CasaLocations {
 export const casaLocations: CasaLocations = {
   "Morocco Mall": { latitude: 33.5899, longitude: -7.6039 },
   "Mosquée Hassan II": { latitude: 33.589, longitude: -7.618 },
+  "Aéroport Mohammed V": { latitude: 33.3668, longitude: -7.5867 },
+  "Twin Center": { latitude: 33.5889, longitude: -7.6395 },
+  "Marina Casablanca": { latitude: 33.6113, longitude: -7.6308 },
+  "Gare Casa-Voyageurs": { latitude: 33.5946, longitude: -7.5897 },
+  "Quartier Habous": { latitude: 33.5802, longitude: -7.6036 },
+  "Ain Diab": { latitude: 33.5881, longitude: -7.6843 },
+  "Boulevard Zerktouni": { latitude: 33.5866, longitude: -7.6242 },
+  "Marché Central": { latitude: 33.594, longitude: -7.6168 },
 };
 
 export default function mapApplication() {

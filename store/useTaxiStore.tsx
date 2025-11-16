@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+
 interface TaxiStore {
     isNightMode: boolean;
     activeRide: any | null;
