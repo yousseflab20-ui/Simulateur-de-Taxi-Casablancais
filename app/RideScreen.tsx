@@ -1,20 +1,33 @@
 import { useTaxiStore } from "@/store/useTaxiStore";
+import { saveRides } from "@/utils/storage";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 export default function Ride() {
     const router = useRouter();
     const mapRef = useRef<MapView>(null);
-    const { activeRide, endRide, cancelRide } = useTaxiStore();
+    const [seconds, setSeconds] = useState(0);
+    const { activeRide, endRide, cancelRide, rideHistory } = useTaxiStore();
+    const finishRideAuto = async () => {
+        if (!activeRide) return;
 
+        await saveRides([...rideHistory, activeRide]);
+
+        endRide();
+
+        router.push("/mapApplication");
+    }
+    useEffect(() => {
+        if (seconds >= 45 && activeRide) {
+            finishRideAuto()
+        }
+    }, [seconds, activeRide])
     const [taxiPosition, setTaxiPosition] = useState(
         activeRide ? activeRide.depart : { latitude: 0, longitude: 0 }
     );
 
-    const [seconds, setSeconds] = useState(0);
 
     const [progress, setProgress] = useState(0);
 
