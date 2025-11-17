@@ -5,32 +5,45 @@ import React, { useEffect, useRef, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+// Données de chauffeurs factices
+const MOCK_DRIVERS = [
+    { name: "Ahmed Benali", car: "Dacia Logan", plate: "A-12345-20", phone: "+212 6 12 34 56 78" },
+    { name: "Fatima Zahra", car: "Peugeot 208", plate: "B-67890-20", phone: "+212 6 23 45 67 89" },
+    { name: "Mohammed Alami", car: "Renault Symbol", plate: "C-54321-20", phone: "+212 6 34 56 78 90" },
+    { name: "Samira Idrissi", car: "Hyundai i10", plate: "D-98765-20", phone: "+212 6 45 67 89 01" },
+];
+
 export default function Ride() {
     const router = useRouter();
     const mapRef = useRef<MapView>(null);
     const [seconds, setSeconds] = useState(0);
     const { activeRide, endRide, cancelRide, rideHistory } = useTaxiStore();
+
+    // Assigner un chauffeur aléatoire si pas de driver
+    const [driver] = useState(() =>
+        activeRide?.driver || MOCK_DRIVERS[Math.floor(Math.random() * MOCK_DRIVERS.length)]
+    );
+
     const finishRideAuto = async () => {
         if (!activeRide) return;
 
         await saveRides([...rideHistory, activeRide]);
-
         endRide();
-
         router.push("/mapApplication");
-    }
+    };
+
     useEffect(() => {
         if (seconds >= 45 && activeRide) {
-            finishRideAuto()
+            finishRideAuto();
         }
-    }, [seconds, activeRide])
+    }, [seconds, activeRide]);
+
     const [taxiPosition, setTaxiPosition] = useState(
         activeRide ? activeRide.depart : { latitude: 0, longitude: 0 }
     );
 
-
     const [progress, setProgress] = useState(0);
-
     const [eta, setEta] = useState('--:--');
 
     const formatTime = (totalSeconds: number) => {
@@ -61,8 +74,6 @@ export default function Ride() {
     }, [seconds, activeRide]);
 
     useEffect(() => {
-        console.log('Active Ride Data:', activeRide);
-
         if (mapRef.current && activeRide) {
             setTimeout(() => {
                 mapRef.current?.fitToCoordinates(
@@ -88,7 +99,6 @@ export default function Ride() {
                 const lngDiff = activeRide.destination.longitude - prev.longitude;
 
                 const remainingDistance = Math.sqrt(latDiff * latDiff + lngDiff * lngDiff);
-
                 const newProgress = ((totalDistance - remainingDistance) / totalDistance) * 100;
                 setProgress(Math.min(newProgress, 100));
 
@@ -116,23 +126,10 @@ export default function Ride() {
             '⭐ Évaluer la course',
             'Comment était votre expérience?',
             [
-                {
-                    text: '⭐⭐⭐⭐⭐ Excellent',
-                    onPress: () => finishRide(5)
-                },
-                {
-                    text: '⭐⭐⭐⭐ Bien',
-                    onPress: () => finishRide(4)
-                },
-                {
-                    text: '⭐⭐⭐ Moyen',
-                    onPress: () => finishRide(3)
-                },
-                {
-                    text: 'Passer',
-                    style: 'cancel',
-                    onPress: () => finishRide(0)
-                }
+                { text: '⭐⭐⭐⭐⭐ Excellent', onPress: () => finishRide(5) },
+                { text: '⭐⭐⭐⭐ Bien', onPress: () => finishRide(4) },
+                { text: '⭐⭐⭐ Moyen', onPress: () => finishRide(3) },
+                { text: 'Passer', style: 'cancel', onPress: () => finishRide(0) }
             ]
         );
     };
@@ -166,7 +163,7 @@ export default function Ride() {
     const handleCallDriver = () => {
         Alert.alert(
             '📞 Appel en cours',
-            `Appel vers ${activeRide.driver?.name}\n${activeRide.driver?.phone}`,
+            `Appel vers ${driver.name}\n${driver.phone}`,
             [{ text: 'OK' }]
         );
     };
@@ -199,24 +196,9 @@ export default function Ride() {
                     strokeColor="#007AFF"
                     strokeWidth={4}
                 />
-
-                <Marker
-                    coordinate={activeRide.depart}
-                    title="Départ"
-                    pinColor="green"
-                />
-
-                <Marker
-                    coordinate={activeRide.destination}
-                    title="Destination"
-                    pinColor="red"
-                />
-
-                <Marker
-                    coordinate={taxiPosition}
-                    title="Votre Taxi"
-                    pinColor="yellow"
-                />
+                <Marker coordinate={activeRide.depart} title="Départ" pinColor="green" />
+                <Marker coordinate={activeRide.destination} title="Destination" pinColor="red" />
+                <Marker coordinate={taxiPosition} title="Votre Taxi" pinColor="yellow" />
             </MapView>
 
             <View style={styles.infoCard}>
@@ -231,9 +213,7 @@ export default function Ride() {
                     <View style={styles.progressBar}>
                         <View style={[styles.progressFill, { width: `${progress}%` }]} />
                     </View>
-                    <Text style={styles.progressText}>
-                        {progress.toFixed(0)}% complété
-                    </Text>
+                    <Text style={styles.progressText}>{progress.toFixed(0)}% complété</Text>
                 </View>
 
                 <View style={styles.etaContainer}>
@@ -243,53 +223,28 @@ export default function Ride() {
 
                 <View style={styles.divider} />
 
-                {activeRide.distance !== undefined && (
-                    <Text style={styles.infoText}>
-                        📍 Distance: {activeRide.distance.toFixed(2)} km
-                    </Text>
-                )}
+                <Text style={styles.infoText}>📍 Distance: {activeRide.distance?.toFixed(2) || 0} km</Text>
+                <Text style={styles.infoText}>⏱️ Durée estimée: {activeRide.duration || 0} min</Text>
+                <Text style={styles.infoPrix}>💰 Prix: {activeRide.price?.toFixed(2) || 0} DH</Text>
 
-                {activeRide.duration !== undefined && (
-                    <Text style={styles.infoText}>
-                        ⏱️ Durée estimée: {activeRide.duration} min
-                    </Text>
-                )}
-
-                {activeRide.prix !== undefined && (
-                    <Text style={styles.infoPrix}>
-                        💰 Prix: {activeRide.prix.toFixed(2)} DH
-                    </Text>
-                )}
-
-                {activeRide.driver && (
-                    <View style={styles.driverInfo}>
-                        <Text style={styles.driverTitle}>Chauffeur:</Text>
-                        <Text style={styles.driverText}>👤 {activeRide.driver.name}</Text>
-                        <Text style={styles.driverText}>🚗 {activeRide.driver.car}</Text>
-                        <Text style={styles.driverText}>🔢 {activeRide.driver.plate}</Text>
-                    </View>
-                )}
+                <View style={styles.driverInfo}>
+                    <Text style={styles.driverTitle}>👤 Chauffeur:</Text>
+                    <Text style={styles.driverText}>{driver.name}</Text>
+                    <Text style={styles.driverText}>🚗 {driver.car}</Text>
+                    <Text style={styles.driverText}>🔢 {driver.plate}</Text>
+                </View>
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={[styles.button, styles.callButton]}
-                    onPress={handleCallDriver}
-                >
+                <TouchableOpacity style={[styles.button, styles.callButton]} onPress={handleCallDriver}>
                     <Text style={styles.buttonText}>📞 Appeler chauffeur</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={[styles.button, styles.endButton]}
-                    onPress={handleEndRide}
-                >
+                <TouchableOpacity style={[styles.button, styles.endButton]} onPress={handleEndRide}>
                     <Text style={styles.buttonText}>✅ Terminer la course</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    style={[styles.button, styles.cancelButton]}
-                    onPress={handleCancelRide}
-                >
+                <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleCancelRide}>
                     <Text style={styles.buttonText}>❌ Annuler</Text>
                 </TouchableOpacity>
             </View>
@@ -312,145 +267,29 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         elevation: 8,
     },
-    infoTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 15,
-        textAlign: 'center',
-    },
-    timerBox: {
-        backgroundColor: '#f0f0f0',
-        padding: 15,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    timerLabel: {
-        fontSize: 14,
-        color: '#666',
-        marginBottom: 5,
-    },
-    timerValue: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: '#DC143C',
-        fontFamily: 'monospace',
-    },
-    progressContainer: {
-        marginTop: 15,
-        marginBottom: 10,
-    },
-    progressBar: {
-        height: 10,
-        backgroundColor: '#e0e0e0',
-        borderRadius: 5,
-        overflow: 'hidden',
-        marginBottom: 8,
-    },
-    progressFill: {
-        height: '100%',
-        backgroundColor: '#28a745',
-        borderRadius: 5,
-    },
-    progressText: {
-        textAlign: 'center',
-        fontSize: 12,
-        color: '#666',
-        fontWeight: '600',
-    },
-    etaContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#f8f9fa',
-        padding: 10,
-        borderRadius: 8,
-        marginTop: 10,
-    },
-    etaLabel: {
-        fontSize: 14,
-        color: '#666',
-    },
-    etaValue: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#007AFF',
-    },
-    divider: {
-        height: 1,
-        backgroundColor: '#e0e0e0',
-        marginVertical: 12,
-    },
-    infoText: {
-        fontSize: 15,
-        marginBottom: 8,
-        color: '#333',
-    },
-    infoPrix: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#DC143C',
-        marginTop: 5,
-    },
-    driverInfo: {
-        marginTop: 15,
-        paddingTop: 15,
-        borderTopWidth: 1,
-        borderTopColor: '#e0e0e0',
-    },
-    driverTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 8,
-    },
-    driverText: {
-        fontSize: 14,
-        marginBottom: 5,
-        color: '#555',
-    },
-    buttonContainer: {
-        position: 'absolute',
-        bottom: 20,
-        left: 20,
-        right: 20,
-        gap: 10,
-    },
-    button: {
-        backgroundColor: '#000',
-        paddingVertical: 15,
-        borderRadius: 12,
-        alignItems: 'center',
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5
-    },
-    callButton: {
-        backgroundColor: '#007AFF',
-    },
-    endButton: {
-        backgroundColor: '#28a745',
-    },
-    cancelButton: {
-        backgroundColor: '#dc3545',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold'
-    },
-    errorContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f5f5f5',
-        padding: 20,
-    },
-    errorText: {
-        fontSize: 20,
-        marginBottom: 30,
-        color: '#333',
-        fontWeight: 'bold',
-    },
+    infoTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 15, textAlign: 'center' },
+    timerBox: { backgroundColor: '#f0f0f0', padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 10 },
+    timerLabel: { fontSize: 14, color: '#666', marginBottom: 5 },
+    timerValue: { fontSize: 32, fontWeight: 'bold', color: '#DC143C', fontFamily: 'monospace' },
+    progressContainer: { marginTop: 15, marginBottom: 10 },
+    progressBar: { height: 10, backgroundColor: '#e0e0e0', borderRadius: 5, overflow: 'hidden', marginBottom: 8 },
+    progressFill: { height: '100%', backgroundColor: '#28a745', borderRadius: 5 },
+    progressText: { textAlign: 'center', fontSize: 12, color: '#666', fontWeight: '600' },
+    etaContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f8f9fa', padding: 10, borderRadius: 8, marginTop: 10 },
+    etaLabel: { fontSize: 14, color: '#666' },
+    etaValue: { fontSize: 16, fontWeight: 'bold', color: '#007AFF' },
+    divider: { height: 1, backgroundColor: '#e0e0e0', marginVertical: 12 },
+    infoText: { fontSize: 15, marginBottom: 8, color: '#333' },
+    infoPrix: { fontSize: 20, fontWeight: 'bold', color: '#DC143C', marginTop: 5 },
+    driverInfo: { marginTop: 15, paddingTop: 15, borderTopWidth: 1, borderTopColor: '#e0e0e0' },
+    driverTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 8 },
+    driverText: { fontSize: 14, marginBottom: 5, color: '#555' },
+    buttonContainer: { position: 'absolute', bottom: 20, left: 20, right: 20, gap: 10 },
+    button: { backgroundColor: '#000', paddingVertical: 15, borderRadius: 12, alignItems: 'center', shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5 },
+    callButton: { backgroundColor: '#007AFF' },
+    endButton: { backgroundColor: '#28a745' },
+    cancelButton: { backgroundColor: '#dc3545' },
+    buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+    errorContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f5f5f5', padding: 20 },
+    errorText: { fontSize: 20, marginBottom: 30, color: '#333', fontWeight: 'bold' },
 });

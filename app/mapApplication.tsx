@@ -140,11 +140,23 @@ export default function mapApplication() {
           padding: 15,
           borderRadius: 17,
         }}
-        onPress={toggleNightMode}
+        onPress={() => router.push("../Booking")}
+
       >
         <Text style={{ fontFamily: "Font3" }}>
           {isNightMode ? "🌙 Mode Nuit" : "☀️ Mode Jour"}
         </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => router.push("/history")}
+        style={{
+          backgroundColor: "#3498db",
+          padding: 12,
+          borderRadius: 8,
+          marginBottom: 16,
+        }}
+      >
+        <Text style={{ color: "white", fontSize: 16 }}>📜 Historique</Text>
       </TouchableOpacity>
     </View>
   );
